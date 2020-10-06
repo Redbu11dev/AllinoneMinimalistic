@@ -19,6 +19,48 @@ targetPowerFrameText:SetFont("Fonts\\ARIALN.TTF", 13, "THINOUTLINE")
 targetPowerFrameText:SetPoint("CENTER",_G["TargetFrameManaBar"],"CENTER",0,0)
 targetPowerFrameText:SetTextColor(1, 1, 1)
 
+function enhanceItemTooltip(tooltip)
+	if AllinoneMinimalisticSettings.showEnhancedItemTooltipCheckbox then
+		local name, link = tooltip:GetItem()
+		local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType,
+		itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(link)
+		
+		--|TInterface\\Icons\\INV_Misc_Coin_01:16|t
+		tooltip:AppendText("  |T"..itemTexture..":16|t")
+		
+		quantity = 1
+		
+		if GetMouseFocus() ~= nil and GetMouseFocus().Count ~= nil and GetMouseFocus().Count:GetText() ~= nil then
+			quantity = tonumber(GetMouseFocus().Count:GetText())
+		end
+		
+		tooltip:AddLine("Additional info:")
+		tooltip:AddLine(string.format("iLvl: %d", itemLevel), 1, 1, 1)
+		tooltip:AddLine(string.format("|cFFf1f1f1Stack size: %s", itemStackCount))
+		--cc801a
+		tooltip:AddLine(GetCoinTextureString(itemSellPrice*quantity), 1, 1, 1)
+		if quantity > 1 then
+			tooltip:AddDoubleLine("|cFFcc801aSell one: ", GetCoinTextureString(itemSellPrice), 0.3, 0.5, 0.4, 1, 1, 1)
+		end
+		if itemStackCount > 1 then
+			tooltip:AddDoubleLine(string.format("|cFFcc801aSell stack (|cFFaf5529%s|cFFcc801a): ", itemStackCount), GetCoinTextureString(itemSellPrice*itemStackCount), 0.3, 0.5, 0.4, 1, 1, 1)
+		end
+		if itemType ~= itemSubType then
+			tooltip:AddLine(string.format("|cFF9966ccItem type: %s - %s", itemType, itemSubType), 0.3, 0.5, 0.4)
+		else
+			tooltip:AddLine(string.format("|cFF9966ccItem type: %s", itemType), 0.3, 0.5, 0.4)
+		end	
+	end
+end
+
+GameTooltip:SetScript("OnTooltipSetItem", function(self)
+	enhanceItemTooltip(GameTooltip)
+end)
+
+ItemRefTooltip:SetScript("OnTooltipSetItem", function(self)
+	enhanceItemTooltip(ItemRefTooltip)
+end)
+
 local auctionSortButton = CreateFrame("Button","auctionSortButton",_G["AuctionFrame"],"UIPanelButtonTemplate") --frameType, frameName, frameParent, frameTemplate    
 auctionSortButton:SetSize(150,20)
 auctionSortButton:SetFrameStrata("HIGH")
@@ -139,7 +181,7 @@ end
 
 function dispatchEvents(self, event, arg1, ...)
 	if event == "ADDON_LOADED" and arg1 == "AllinoneMinimalistic" then
-	    print(string.format("%s v1.0.0 is loaded susscessfully\nThank you for using my addon", arg1));
+	    print(string.format("%s v1.0.1 is loaded susscessfully\nThank you for using my addon", arg1));
 		initSettings()
 		addonIsLoaded = true
 		handleEvent(nil, "BAG_UPDATE", 0)
@@ -154,7 +196,8 @@ function loadDefaultSettings()
 	AllinoneMinimalisticSettings = {
 		  showMobHealthAndPowerCheckbox=true, 
 		  showFreeBagSpaceCheckbox=true, 
-		  showSortByBuyoutCheckbox=true
+		  showSortByBuyoutCheckbox=true,
+		  showEnhancedItemTooltipCheckbox=true
 	  }
 end
 
@@ -165,10 +208,14 @@ function initSettings()
 	
 	if AllinoneMinimalisticSettings == nil then
 		loadDefaultSettings()
-		print("unable to load AllinoneMinimalistic saved data, backing up to defaults");
-	else
-		print("AllinoneMinimalistic saved data loaded");
-	end
+		print("unable to load AllinoneMinimalistic saved data, backing up to defaults")
+	else	
+		if AllinoneMinimalisticSettings.showEnhancedItemTooltipCheckbox == nil then
+			AllinoneMinimalisticSettings.showEnhancedItemTooltipCheckbox=true
+			print("AllinoneMinimalistic.showEnhancedItemTooltipCheckbox is a new feature, enabling by default")
+		end
+		print("AllinoneMinimalistic saved data loaded")
+	end	
 	
 	local showMobHealthAndPowerCheckbox = CreateFrame("CheckButton", "showMobHealthAndPowerCheckbox", optionsFrame, "UICheckButtonTemplate")
 	showMobHealthAndPowerCheckbox:SetPoint("TOPLEFT",0,0)
@@ -199,6 +246,16 @@ function initSettings()
 			AllinoneMinimalisticSettings.showSortByBuyoutCheckbox=not AllinoneMinimalisticSettings.showSortByBuyoutCheckbox 
 			updateAll() 
 		end)	  
+		
+	local showEnhancedItemTooltipCheckbox = CreateFrame("CheckButton", "showEnhancedItemTooltipCheckbox", optionsFrame, "UICheckButtonTemplate")
+	showEnhancedItemTooltipCheckbox:SetPoint("TOPLEFT",0,-90)
+	showEnhancedItemTooltipCheckbox.text:SetText("Show enhanced item tooltip")
+	showEnhancedItemTooltipCheckbox:SetChecked(AllinoneMinimalisticSettings.showEnhancedItemTooltipCheckbox)
+	showEnhancedItemTooltipCheckbox:SetScript("OnClick",
+		function()
+			AllinoneMinimalisticSettings.showEnhancedItemTooltipCheckbox=not AllinoneMinimalisticSettings.showEnhancedItemTooltipCheckbox 
+			updateAll() 
+		end)	
 end
 
 function init()
