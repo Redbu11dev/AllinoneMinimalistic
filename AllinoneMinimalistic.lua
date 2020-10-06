@@ -1,4 +1,4 @@
-local version = "1.0.4"
+local version = "1.0.5"
 
 local frame = CreateFrame("Frame")
 frame:SetFrameStrata("LOW")
@@ -32,7 +32,7 @@ function enhanceItemTooltip(tooltip, useQuantity)
 			tooltip:AppendText("  |T"..itemTexture..":16|t")
 		end
 		
-		quantity = 1
+		local quantity = 1
 		
 		if useQuantity and GetMouseFocus() ~= nil and GetMouseFocus().Count ~= nil and GetMouseFocus().Count:GetText() ~= nil then
 			quantity = tonumber(GetMouseFocus().Count:GetText())
