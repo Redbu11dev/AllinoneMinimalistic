@@ -26,7 +26,9 @@ function enhanceItemTooltip(tooltip)
 		itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(link)
 		
 		--|TInterface\\Icons\\INV_Misc_Coin_01:16|t
-		tooltip:AppendText("  |T"..itemTexture..":16|t")
+		if itemTexture ~= nil then
+			tooltip:AppendText("  |T"..itemTexture..":16|t")
+		end
 		
 		quantity = 1
 		
@@ -181,7 +183,7 @@ end
 
 function dispatchEvents(self, event, arg1, ...)
 	if event == "ADDON_LOADED" and arg1 == "AllinoneMinimalistic" then
-	    print(string.format("%s v1.0.1 is loaded susscessfully\nThank you for using my addon", arg1));
+	    print(string.format("%s v1.0.2 is loaded susscessfully\nThank you for using my addon", arg1));
 		initSettings()
 		addonIsLoaded = true
 		handleEvent(nil, "BAG_UPDATE", 0)
