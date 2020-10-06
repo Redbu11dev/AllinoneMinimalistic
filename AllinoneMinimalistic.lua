@@ -1,4 +1,4 @@
-local version = "1.0.3"
+local version = "1.0.4"
 
 local frame = CreateFrame("Frame")
 frame:SetFrameStrata("LOW")
@@ -21,7 +21,7 @@ targetPowerFrameText:SetFont("Fonts\\ARIALN.TTF", 13, "THINOUTLINE")
 targetPowerFrameText:SetPoint("CENTER",_G["TargetFrameManaBar"],"CENTER",0,0)
 targetPowerFrameText:SetTextColor(1, 1, 1)
 
-function enhanceItemTooltip(tooltip)
+function enhanceItemTooltip(tooltip, useQuantity)
 	if AllinoneMinimalisticSettings.showEnhancedItemTooltipCheckbox then
 		local name, link = tooltip:GetItem()
 		local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType,
@@ -34,7 +34,7 @@ function enhanceItemTooltip(tooltip)
 		
 		quantity = 1
 		
-		if GetMouseFocus() ~= nil and GetMouseFocus().Count ~= nil and GetMouseFocus().Count:GetText() ~= nil then
+		if useQuantity and GetMouseFocus() ~= nil and GetMouseFocus().Count ~= nil and GetMouseFocus().Count:GetText() ~= nil then
 			quantity = tonumber(GetMouseFocus().Count:GetText())
 		end
 		
@@ -44,27 +44,31 @@ function enhanceItemTooltip(tooltip)
 			tooltip:AddLine(string.format("|cFFf1f1f1Stack size: %s", itemStackCount))
 		end
 		--cc801a
-		tooltip:AddLine(GetCoinTextureString(itemSellPrice*quantity), 1, 1, 1)
-		if quantity > 1 then
+		if quantity ~= nil and itemSellPrice ~= nil then
+		 tooltip:AddLine(GetCoinTextureString(itemSellPrice*quantity), 1, 1, 1)
+		end
+		if quantity ~= nil and quantity > 1 then
 			tooltip:AddDoubleLine("|cFFcc801aSell one: ", GetCoinTextureString(itemSellPrice), 0.3, 0.5, 0.4, 1, 1, 1)
 		end
 		if itemStackCount ~= nil and itemStackCount > 1 then
 			tooltip:AddDoubleLine(string.format("|cFFcc801aSell stack (|cFFaf5529%s|cFFcc801a): ", itemStackCount), GetCoinTextureString(itemSellPrice*itemStackCount), 0.3, 0.5, 0.4, 1, 1, 1)
 		end
-		if itemType ~= itemSubType then
-			tooltip:AddLine(string.format("|cFF9966ccItem type: %s - %s", itemType, itemSubType), 0.3, 0.5, 0.4)
-		else
-			tooltip:AddLine(string.format("|cFF9966ccItem type: %s", itemType), 0.3, 0.5, 0.4)
-		end	
+		if itemType ~= nil and itemSubType ~= nil then
+			if itemType ~= itemSubType then
+				tooltip:AddLine(string.format("|cFF9966ccItem type: %s - %s", itemType, itemSubType), 0.3, 0.5, 0.4)
+			else
+				tooltip:AddLine(string.format("|cFF9966ccItem type: %s", itemType), 0.3, 0.5, 0.4)
+			end	
+		end
 	end
 end
 
 GameTooltip:SetScript("OnTooltipSetItem", function(self)
-	enhanceItemTooltip(GameTooltip)
+	enhanceItemTooltip(GameTooltip, true)
 end)
 
 ItemRefTooltip:SetScript("OnTooltipSetItem", function(self)
-	enhanceItemTooltip(ItemRefTooltip)
+	enhanceItemTooltip(ItemRefTooltip, false)
 end)
 
 local auctionSortButton = CreateFrame("Button","auctionSortButton",_G["AuctionFrame"],"UIPanelButtonTemplate") --frameType, frameName, frameParent, frameTemplate    

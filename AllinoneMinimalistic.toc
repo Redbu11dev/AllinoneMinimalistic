@@ -1,5 +1,5 @@
 ## Interface: 11305
-## Version: 1.0.3
+## Version: 1.0.4
 ## Author: Redbu11
 ## Title: AllinoneMinimalistic
 ## Notes: All in one minimalistic addon
