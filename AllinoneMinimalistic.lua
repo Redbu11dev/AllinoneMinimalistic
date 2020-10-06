@@ -1,4 +1,4 @@
-local version = "1.0.5"
+local version = "1.0.6"
 
 local frame = CreateFrame("Frame")
 frame:SetFrameStrata("LOW")
@@ -35,6 +35,7 @@ function enhanceItemTooltip(tooltip, useQuantity)
 		local quantity = 1
 		
 		if useQuantity and GetMouseFocus() ~= nil and GetMouseFocus().Count ~= nil and GetMouseFocus().Count:GetText() ~= nil then
+		-- this can give an icorrect amount
 			quantity = tonumber(GetMouseFocus().Count:GetText())
 		end
 		
@@ -65,6 +66,12 @@ end
 
 GameTooltip:SetScript("OnTooltipSetItem", function(self)
 	enhanceItemTooltip(GameTooltip, true)
+	--Auto show item comparison
+	if AllinoneMinimalisticSettings.autoShowItemEquipmentComparisonCheckbox then
+		if not self:IsEquippedItem() then
+			GameTooltip_ShowCompareItem(self)
+		end
+	end
 end)
 
 ItemRefTooltip:SetScript("OnTooltipSetItem", function(self)
@@ -207,7 +214,8 @@ function loadDefaultSettings()
 		  showMobHealthAndPowerCheckbox=true, 
 		  showFreeBagSpaceCheckbox=true, 
 		  showSortByBuyoutCheckbox=true,
-		  showEnhancedItemTooltipCheckbox=true
+		  showEnhancedItemTooltipCheckbox=true,
+		  autoShowItemEquipmentComparisonCheckbox=true
 	  }
 end
 
@@ -222,7 +230,11 @@ function initSettings()
 	else	
 		if AllinoneMinimalisticSettings.showEnhancedItemTooltipCheckbox == nil then
 			AllinoneMinimalisticSettings.showEnhancedItemTooltipCheckbox=true
-			print("AllinoneMinimalistic.showEnhancedItemTooltipCheckbox is a new feature, enabling by default")
+			print("AllinoneMinimalistic.showEnhancedItemTooltip is a new feature, enabling by default")
+		end
+		if AllinoneMinimalisticSettings.autoShowItemEquipmentComparisonCheckbox == nil then
+			AllinoneMinimalisticSettings.autoShowItemEquipmentComparisonCheckbox=true
+			print("AllinoneMinimalistic.autoShowEquipmentComparison is a new feature, enabling by default")
 		end
 		print("AllinoneMinimalistic saved data loaded")
 	end	
@@ -264,6 +276,16 @@ function initSettings()
 	showEnhancedItemTooltipCheckbox:SetScript("OnClick",
 		function()
 			AllinoneMinimalisticSettings.showEnhancedItemTooltipCheckbox=not AllinoneMinimalisticSettings.showEnhancedItemTooltipCheckbox 
+			updateAll() 
+		end)	
+		
+	local autoShowItemEquipmentComparisonCheckbox = CreateFrame("CheckButton", "autoShowItemEquipmentComparisonCheckbox", optionsFrame, "UICheckButtonTemplate")
+	autoShowItemEquipmentComparisonCheckbox:SetPoint("TOPLEFT",0,-120)
+	autoShowItemEquipmentComparisonCheckbox.text:SetText("Automatically show equipment comparison on an equippable item")
+	autoShowItemEquipmentComparisonCheckbox:SetChecked(AllinoneMinimalisticSettings.autoShowItemEquipmentComparisonCheckbox)
+	autoShowItemEquipmentComparisonCheckbox:SetScript("OnClick",
+		function()
+			AllinoneMinimalisticSettings.autoShowItemEquipmentComparisonCheckbox=not AllinoneMinimalisticSettings.autoShowItemEquipmentComparisonCheckbox 
 			updateAll() 
 		end)	
 end
