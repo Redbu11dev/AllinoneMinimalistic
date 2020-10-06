@@ -8,6 +8,5 @@ All-in-one minimalistic addon for World of Warcraft: Classic
 - Shows enhanced item tooltips for both inventory items and chat links (with vendor prices and item icons!)
 
 # TODO
-- item vendor prices
 - buffs to party frames
 - maybe more stuff
