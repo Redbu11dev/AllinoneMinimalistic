@@ -1,3 +1,5 @@
+local version = "1.0.3"
+
 local frame = CreateFrame("Frame")
 frame:SetFrameStrata("LOW")
 
@@ -38,13 +40,15 @@ function enhanceItemTooltip(tooltip)
 		
 		tooltip:AddLine("Additional info:")
 		tooltip:AddLine(string.format("iLvl: %d", itemLevel), 1, 1, 1)
-		tooltip:AddLine(string.format("|cFFf1f1f1Stack size: %s", itemStackCount))
+		if itemStackCount ~= nil and itemStackCount > 1 then
+			tooltip:AddLine(string.format("|cFFf1f1f1Stack size: %s", itemStackCount))
+		end
 		--cc801a
 		tooltip:AddLine(GetCoinTextureString(itemSellPrice*quantity), 1, 1, 1)
 		if quantity > 1 then
 			tooltip:AddDoubleLine("|cFFcc801aSell one: ", GetCoinTextureString(itemSellPrice), 0.3, 0.5, 0.4, 1, 1, 1)
 		end
-		if itemStackCount > 1 then
+		if itemStackCount ~= nil and itemStackCount > 1 then
 			tooltip:AddDoubleLine(string.format("|cFFcc801aSell stack (|cFFaf5529%s|cFFcc801a): ", itemStackCount), GetCoinTextureString(itemSellPrice*itemStackCount), 0.3, 0.5, 0.4, 1, 1, 1)
 		end
 		if itemType ~= itemSubType then
@@ -183,7 +187,7 @@ end
 
 function dispatchEvents(self, event, arg1, ...)
 	if event == "ADDON_LOADED" and arg1 == "AllinoneMinimalistic" then
-	    print(string.format("%s v1.0.2 is loaded susscessfully\nThank you for using my addon", arg1));
+	    print(string.format("%s v%s is loaded susscessfully\nThank you for using my addon", arg1, version));
 		initSettings()
 		addonIsLoaded = true
 		handleEvent(nil, "BAG_UPDATE", 0)
