@@ -1,5 +1,6 @@
 # AllinoneMinimalistic
 All-in-one minimalistic addon for World of Warcraft: Classic
+Download at https://www.curseforge.com/wow/addons/all-in-one-minimalistic
 
 # Features
 - Shows Mob health/power values on the target unit frame
