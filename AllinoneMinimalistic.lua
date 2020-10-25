@@ -32,17 +32,31 @@ function enhanceItemTooltip(tooltip, useQuantity)
 			tooltip:AppendText("  |T"..itemTexture..":16|t")
 		end
 		
+		--quantity1 = GetMouseFocus().count
+		--quantity2 = GetMouseFocus().Quantity
+		--tooltip:AddLine("debug_count1: "..tostring(quantity1).."")
+		--tooltip:AddLine("debug_count2: "..tostring(quantity2).."")
+		
 		local quantity = 1
 		
-		if useQuantity and GetMouseFocus() ~= nil and GetMouseFocus().Count ~= nil and GetMouseFocus().Count:GetText() ~= nil then
+		if useQuantity and GetMouseFocus() ~= nil then
 		-- this can give an icorrect amount
-			quantity = tonumber(GetMouseFocus().Count:GetText())
+			--quantity = tonumber(GetMouseFocus().Count:GetText())
+			if GetMouseFocus().count ~= nil then
+				quantity = GetMouseFocus().count
+			elseif GetMouseFocus().Count ~= nil then
+				quantity = tonumber(GetMouseFocus().Count:GetText())
+			end
 		end
 		
 		tooltip:AddLine("Additional info:")
-		tooltip:AddLine(string.format("iLvl: %d", itemLevel), 1, 1, 1)
-		if itemStackCount ~= nil and itemStackCount > 1 then
-			tooltip:AddLine(string.format("|cFFf1f1f1Stack size: %s", itemStackCount))
+		tooltip:AddLine(string.format("Item level: %d", itemLevel), 1, 1, 1)
+		--if itemStackCount ~= nil and itemStackCount > 1 then
+		if itemStackCount ~= nil then
+			tooltip:AddLine(string.format("|cFFf1f1f1Max stack size: %s", itemStackCount))
+		end
+		if quantity > 1 then
+			tooltip:AddLine(string.format("|cFFf1f1f1Current stack size: %s", quantity))
 		end
 		--cc801a
 		if quantity ~= nil and itemSellPrice ~= nil then
@@ -76,6 +90,14 @@ end)
 
 ItemRefTooltip:SetScript("OnTooltipSetItem", function(self)
 	enhanceItemTooltip(ItemRefTooltip, false)
+end)
+
+ShoppingTooltip1:SetScript("OnTooltipSetItem", function(self)
+	enhanceItemTooltip(ShoppingTooltip1, false)
+end)
+
+ShoppingTooltip2:SetScript("OnTooltipSetItem", function(self)
+	enhanceItemTooltip(ShoppingTooltip2, false)
 end)
 
 local auctionSortButton = CreateFrame("Button","auctionSortButton",_G["AuctionFrame"],"UIPanelButtonTemplate") --frameType, frameName, frameParent, frameTemplate    
