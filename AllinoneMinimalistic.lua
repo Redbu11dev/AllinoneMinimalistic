@@ -44,8 +44,11 @@ function enhanceItemTooltip(tooltip, useQuantity)
 			--quantity = tonumber(GetMouseFocus().Count:GetText())
 			if GetMouseFocus().count ~= nil then
 				quantity = GetMouseFocus().count
-			elseif GetMouseFocus().Count ~= nil then
+			elseif GetMouseFocus().Count ~= nil and GetMouseFocus().Count:GetText() ~= nil then
 				quantity = tonumber(GetMouseFocus().Count:GetText())
+				if quantity == nil then
+					quantity = 1
+				end
 			end
 		end
 		
