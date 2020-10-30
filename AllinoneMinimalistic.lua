@@ -46,9 +46,10 @@ function enhanceItemTooltip(tooltip, useQuantity)
 				quantity = GetMouseFocus().count
 			elseif GetMouseFocus().Count ~= nil and GetMouseFocus().Count:GetText() ~= nil then
 				quantity = tonumber(GetMouseFocus().Count:GetText())
-				if quantity == nil then
-					quantity = 1
-				end
+			end
+			
+			if quantity == nil or (type(quantity) ~= "number") then
+				quantity = 1
 			end
 		end
 		
@@ -65,8 +66,9 @@ function enhanceItemTooltip(tooltip, useQuantity)
 		if quantity ~= nil and itemSellPrice ~= nil then
 		 tooltip:AddLine(GetCoinTextureString(itemSellPrice*quantity), 1, 1, 1)
 		end
-		if quantity ~= nil and quantity > 1 then
+		if quantity ~= nil and quantity > 1 and itemSellPrice ~= nil then
 			tooltip:AddDoubleLine("|cFFcc801aSell one: ", GetCoinTextureString(itemSellPrice), 0.3, 0.5, 0.4, 1, 1, 1)
+			--tooltip:AddDoubleLine("|cFFcc801aSell one: ", GetCoinText(itemSellPrice, 14), 0.3, 0.5, 0.4, 1, 1, 1)
 		end
 		if itemStackCount ~= nil and itemStackCount > 1 then
 			tooltip:AddDoubleLine(string.format("|cFFcc801aSell stack (|cFFaf5529%s|cFFcc801a): ", itemStackCount), GetCoinTextureString(itemSellPrice*itemStackCount), 0.3, 0.5, 0.4, 1, 1, 1)
